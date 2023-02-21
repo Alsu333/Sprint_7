@@ -5,18 +5,19 @@ import org.example.metods.Courier;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
 import static org.example.models.Constants.Constant.BASE_URL;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
 
 public class CourierLoginTest {
     @Before
     public void setUp() {
         RestAssured.baseURI = BASE_URL;
     }
+
     @Test
     @DisplayName("Courier can be created")
-    public void CourierLogin(){
+    public void courierLogin() {
         Response response = Courier.login();
         response.then().log().all()
                 .assertThat()
@@ -24,26 +25,29 @@ public class CourierLoginTest {
                 .and()
                 .body("id", notNullValue());
     }
+
     @Test
     @DisplayName("Error after login without data")
-    public void LoginWithoutPassword(){
+    public void loginWithoutPassword() {
         Response response = Courier.loginWithoutLogin();
         response.then().log().all()
                 .assertThat()
                 .statusCode(400)
                 .and()
-                .body("message",equalTo("Недостаточно данных для входа"));
+                .body("message", equalTo("Недостаточно данных для входа"));
     }
+
     @Test
     @DisplayName("Login with notValid data")
-    public void LoginNoValidData(){
+    public void loginNoValidData() {
         Response response = Courier.noRegData();
         response.then().log().all()
                 .assertThat()
                 .statusCode(404)
                 .and()
-                .body("message",equalTo("Учетная запись не найдена"));
+                .body("message", equalTo("Учетная запись не найдена"));
     }
+
     @After
     public void setDown() {
         Response response = Courier.delete_client();

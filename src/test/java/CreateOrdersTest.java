@@ -7,22 +7,20 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-
 import java.util.List;
 import static io.restassured.RestAssured.given;
+import static org.example.models.Constants.Constant.ApiOrders;
 import static org.example.models.Constants.Constant.BASE_URL;
 
 @RunWith(Parameterized.class)
 public class CreateOrdersTest { //тестовый класс с полями
     private final List<String> colors;
     private OrdersData ordersData;
-    public CreateOrdersTest(List<String>colors) {
-        this.colors=colors;
+
+    public CreateOrdersTest(List<String> colors) {
+        this.colors = colors;
     }
-    @Before
-    public void setUp(){
-        RestAssured.baseURI = BASE_URL;
-    }
+
     @Parameterized.Parameters
     public static Object[] setOrderColor() {
         return new Object[][]{
@@ -32,15 +30,21 @@ public class CreateOrdersTest { //тестовый класс с полями
                 {List.of("GRAY", "BLACK")}// передали тестовые данные
         };
     }
+
+    @Before
+    public void setUp() {
+        RestAssured.baseURI = BASE_URL;
+    }
+
     @Test
     @DisplayName("Can choose color in params")
     public void OrdersTest() {
         List<String> color = List.of(setOrderColor().toString());
-        ordersData = new OrdersData("Naruto", "Uchiha", "Konoha, 142 apt.", 4, "+7 800 355 35 35", 5, "2020-06-06", "Saske, come back to Konoha",color); //здесь храняться данные
+        ordersData = new OrdersData("Naruto", "Uchiha", "Konoha, 142 apt.", 4, "+7 800 355 35 35", 5, "2020-06-06", "Saske, come back to Konoha", color); //здесь храняться данные
         TrackOrder response = given()
                 .body(ordersData)
                 .when()
-                .post( "api/v1/orders")
+                .post(ApiOrders)
                 .then().log().all()
                 .extract().as(TrackOrder.class);
         Assert.assertNotNull(response.getTrack());
